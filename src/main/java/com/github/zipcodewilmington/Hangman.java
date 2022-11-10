@@ -1,68 +1,57 @@
 package com.github.zipcodewilmington;
 //Zachary Prongua
 
+import java.util.Arrays;
+import java.util.Scanner;
+
 /**
  * @author xt0fer
  * @version 1.0.0
  * @date 5/27/21 11:02 AM
  */
 public class Hangman {
+    Scanner in = new Scanner(System.in);
     String[] words = {"cat", "cut", "dog", "dig", "sip", "sap", "top", "tip", "tic", "toc"};
-    Character[] userAnswer = new Character[3];
-    Character[] givenWord = new Character[3];
+    Character[] givenWord;
+    Character[] displayWord;
+    int nog;
 
-    public void Hangman() {
+    public Hangman() {
     }
 
     public static void main(String[] args) {
         Hangman game = new Hangman();
-        int nog = 0;
         game.runGame();
     }
 
     public void runGame() {
-//        choose a random word from a list
         initializeGameState();
-        //NumberOfGuesses
-        int nog = 0;
-
         announceGame();
-//
-//        while (you want to play) { //outer loop
-        while (nog<=givenWord.length+3) {
-//            start the game
+        nog=0;
 
-//            set word guessed to false
-            while (!isWordGuessed()){ //(the word isn't guessed) { //inner loop
-//            print the current game state
-                printCurrentState();
-//            ask for a guess (a single letter)
-                char guess = getNextGuess();
-//            check the letter against the word
-                process(guess);
-//            using the two character arrays discussed above
-//            increment the number of guesses
-                nog++;
-//
-//            if the word is guessed
-//            player won, congrats
+        while (nog<givenWord.length+3) {
+            printCurrentState();
+            char guess = getNextGuess();
+            process(guess);
+            nog++;
+            if (isWordGuessed()) {
                 playerWon();
-//
-//            if too many guesses
-//            player lost, too bad, quit game
-                playerLost();
+                break;
             }
-//        ask if player wants to play again
-            if (askToPlayAgain()) {
-                nog=0;
-            };
         }
-//    display game over
-    gameOver();
+        playerLost();
+        if (askToPlayAgain()) {
+            runGame();
+        }
+        gameOver();
     }
 
-    public String printArray() {
-        return null;
+    public String printArray(Character[] word) {
+        StringBuilder str = new StringBuilder();
+        for (Character c : word) {
+            str.append(c).append(" ");
+        }
+        return str.toString();
     }
 
     public void announceGame() {
@@ -74,38 +63,49 @@ public class Hangman {
     }
 
     public void initializeGameState() {
-//        sets up char[] for secret word and guesses
+        int num = (int) (Math.random()*words.length);
+        givenWord = new Character[words[num].length()];
+        displayWord = new Character[words[num].length()];
+        for (int i=0; i<words[num].length(); i++) {
+            givenWord[i] = words[num].charAt(i);
+            displayWord[i] = '_';
+        }
     }
 
     public Character getNextGuess() {
 //        returns a char from player input
-        return null;
+        System.out.println("Guess a letter:");
+        return in.nextLine().charAt(0);
     }
 
     public Boolean isWordGuessed() {
-//    returns boolean
-        return false;
+        return Arrays.equals(givenWord, displayWord);
     }
 
     public Boolean askToPlayAgain() {
-//        returns boolean
-        return false;
+        System.out.println("Wanna play a game?");
+        return (in.nextLine().equalsIgnoreCase("yes"));
     }
 
     public void printCurrentState() {
-//    uses printArray to show player where they are at
-        printArray();
+        System.out.println(printArray(displayWord));
     }
 
     public void process(Character guess) {
-//        loops thru the word array, looking for the inputed guess, and replaces the "_" with the guesses char if found
+        for (int i=0; i< givenWord.length; i++) {
+            if (givenWord[i].equals(guess)) {
+                displayWord[i] = guess;
+            }
+        }
     }
 
     public void playerWon() {
-//    prints happy message
+        printCurrentState();
+        System.out.println("Yippee. "+nog+" guesses.");
     }
 
     public void playerLost() {
-//    print sad message
+        System.out.println(printArray(givenWord));
+        System.out.println("So sad. ");
     }
 }

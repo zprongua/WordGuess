@@ -15,12 +15,5 @@ public class HangmanTest {
     //Then
 
     @Test
-    public void testCatStuff() {
-        String expectedName = "Heathcliff";
-        int expectedAge = 7;
-        int expectedWeight = 23;
-        Cat hc = new Cat(expectedName, expectedAge, expectedWeight);
-        String actualName = hc.getName();
-        Assert.assertEquals(expectedName, actualName);
-    }
+    
 }
